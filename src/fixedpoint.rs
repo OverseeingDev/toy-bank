@@ -1,23 +1,3 @@
-/**
- * My own implementation of string to fixed point
- * integers... Might not have been the best move given the amount
- * of error handling I ended up having to put in for me to feel
- * satisfied about its robustness, but I didn't want to pull in a
- * library for such a 'trivial' thing. The best move in my opinion would have been
- * to implement a custom deserializer for serde with maybe a custom type for the fixed
- * point integer, but I have never done it and it would probably have blown my 3h budget.
- *
- * Note: At a few points I left in panics instead of errors where I felt was
- * sufficiently unlikely, mostly so that I could be done faster, would have been better
- * to return errors at those points too.
- *
- * Note 2: I validate at parse time that the transactions are valid in isolation
- * which allows me to cut down massively in error handling down the line.
- *
- * Note 3: I think my choice to use a &'string str error type has been shortsighted
- * as it prevented me from returning more specific warning messages, it would have been better
- * to use a more flexible Error type
- */
 const FIXED_POINT_MAGNITUDE: i64 = 10000;
 
 pub fn string_to_fixed_point(string: &str) -> Result<i64, &'static str> {
@@ -50,9 +30,6 @@ pub fn string_to_fixed_point(string: &str) -> Result<i64, &'static str> {
     Ok(units * FIXED_POINT_MAGNITUDE + ten_thousandths)
 }
 
-/**
- * I can safely ignore negatives as they should be rejected at parse time
- */
 pub fn fixed_point_to_string(fixed_point: i64) -> String {
     format!(
         "{}.{:4>0}",
